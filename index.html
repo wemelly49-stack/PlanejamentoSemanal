@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumiar Eventos | Relatório Comercial</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root{
+    --gold:#c9a24b;
+    --gold-light:#e6c97a;
+    --gold-dark:#8a6a1f;
+    --brown:#2b0f0f;
+    --brown-2:#3d1616;
+    --cream:#f7f2e7;
+    --text:#2b1a0e;
+    --muted:#7a6a55;
+    --green:#2e7d4f;
+    --red:#b23b3b;
+    --amber:#c98a1e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Tahoma, sans-serif;
+    background:var(--cream);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg, #2b0f0f 0%, #4a1a1a 55%, #6b2a12 100%);
+    color:var(--gold-light);
+    padding:22px 28px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    border-bottom:4px solid var(--gold);
+    box-shadow:0 4px 14px rgba(0,0,0,.35);
+  }
+  header .logo{
+    width:64px;height:64px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #f3d98a, #c9a24b 55%, #7a5a17 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-size:30px;color:#3d1616;
+    box-shadow:0 0 0 3px rgba(201,162,75,.35), inset 0 0 12px rgba(0,0,0,.35);
+    flex:0 0 auto;
+  }
+  header h1{
+    margin:0;font-size:22px;letter-spacing:.5px;color:var(--gold-light);
+    font-family:Georgia, 'Times New Roman', serif;
+  }
+  header h1 span{display:block;font-size:13px;letter-spacing:3px;color:#d8b86a;font-family:'Segoe UI',sans-serif;text-transform:uppercase;margin-top:2px;}
+  header .right{margin-left:auto;text-align:right;font-size:12px;color:#e8d4a0;letter-spacing:1px;}
+  header .right button{
+    margin-top:6px;
+    background:linear-gradient(180deg,#d9b45c,#b8923a);
+    border:none;color:#2b0f0f;padding:7px 14px;border-radius:7px;
+    font-weight:700;font-size:12px;cursor:pointer;letter-spacing:.5px;
+  }
+  header .right button:hover{filter:brightness(1.08);}
+
+  nav.tabs{
+    display:flex;flex-wrap:wrap;gap:6px;
+    padding:14px 28px 0;background:var(--brown-2);
+    border-bottom:3px solid var(--gold);
+  }
+  nav.tabs button{
+    background:transparent;border:1px solid transparent;
+    color:#e8d4a0;padding:10px 20px;cursor:pointer;
+    font-size:13.5px;letter-spacing:1px;text-transform:uppercase;
+    border-radius:8px 8px 0 0;font-weight:600;
+    transition:.2s;
+  }
+  nav.tabs button:hover{background:rgba(201,162,75,.15);}
+  nav.tabs button.active{
+    background:var(--cream);color:var(--brown);
+    border:1px solid var(--gold);border-bottom:3px solid var(--cream);
+    margin-bottom:-3px;
+  }
+
+  main{padding:24px 28px 60px;max-width:1400px;margin:0 auto;}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .card{
+    background:#fff;border:1px solid #e5d9bf;border-radius:12px;
+    box-shadow:0 3px 12px rgba(61,22,22,.08);
+    padding:18px 20px;margin-bottom:22px;
+  }
+  .card h2{
+    margin:0 0 14px;font-family:Georgia,serif;font-size:18px;color:var(--brown);
+    border-left:5px solid var(--gold);padding-left:10px;
+  }
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+  .stat{
+    flex:1 1 150px;background:linear-gradient(160deg,#fffdf7,#f3e8cf);
+    border:1px solid #e2cfa0;border-radius:10px;padding:14px 16px;text-align:center;
+    box-shadow:inset 0 0 0 1px #fff;
+  }
+  .stat .num{font-size:28px;font-weight:800;color:var(--gold-dark);font-family:Georgia,serif;}
+  .stat .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-top:2px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{
+    background:linear-gradient(180deg,#3d1616,#2b0f0f);color:var(--gold-light);
+    padding:10px 10px;text-align:left;font-size:12px;letter-spacing:.8px;
+    text-transform:uppercase;position:sticky;top:0;z-index:2;
+    border-bottom:2px solid var(--gold);
+  }
+  tbody td{padding:9px 10px;border-bottom:1px solid #eee3cc;vertical-align:middle;}
+  tbody tr:nth-child(even){background:#fdfaf2;}
+  tbody tr:hover{background:#f7eed8;}
+  .table-wrap{max-height:600px;overflow:auto;border:1px solid #e5d9bf;border-radius:10px;}
+
+  .badge{
+    display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.4px;
+  }
+  .b-fechou{background:#d9f2e2;color:#1e6a40;}
+  .b-recusou{background:#f8dada;color:#a02a2a;}
+  .b-quase{background:#fbecc8;color:#8a6100;}
+  .b-semresp{background:#e3e8f5;color:#3b4a7a;}
+  .b-falha{background:#f0e0f0;color:#7a2a7a;}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .toolbar input, .toolbar select{
+    padding:9px 12px;border:1px solid #d8c9a6;border-radius:8px;font-size:13px;
+    background:#fffdf7;color:var(--text);outline:none;
+  }
+  .toolbar input:focus,.toolbar select:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,162,75,.25);}
+  .toolbar .grow{flex:1 1 220px;}
+
+  button.btn{
+    background:linear-gradient(180deg,#d9b45c,#b8923a);border:none;color:#2b0f0f;
+    padding:10px 18px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;
+    letter-spacing:.5px;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:.15s;
+  }
+  button.btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+  button.btn.dark{background:linear-gradient(180deg,#4a1a1a,#2b0f0f);color:var(--gold-light);}
+  button.btn.ghost{background:transparent;border:1px solid var(--gold-dark);color:var(--gold-dark);box-shadow:none;}
+
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .form-grid label{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:4px;font-weight:600;}
+  .form-grid input,.form-grid select,.form-grid textarea{
+    width:100%;padding:9px 10px;border:1px solid #d8c9a6;border-radius:8px;
+    font-size:13.5px;background:#fffdf7;color:var(--text);font-family:inherit;
+  }
+  .form-grid textarea{resize:vertical;min-height:38px;}
+  .form-grid .full{grid-column:1 / -1;}
+
+  .empty-hint{color:var(--muted);font-style:italic;font-size:13px;padding:12px;}
+
+  .day-block{margin-bottom:26px;}
+  .day-block h3{
+    font-family:Georgia,serif;font-size:16px;color:var(--brown);
+    background:linear-gradient(90deg,#f3e8cf,#fffdf7);border-left:5px solid var(--gold);
+    padding:8px 12px;border-radius:0 8px 8px 0;margin:0 0 8px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .day-block h3 small{font-family:'Segoe UI',sans-serif;font-size:11px;color:var(--muted);letter-spacing:1px;font-weight:600;}
+  .day-table td input{
+    width:100%;border:none;background:transparent;font-size:13px;color:var(--text);
+    padding:4px 2px;outline:none;
+  }
+  .day-table td input:focus{background:#fff6dd;border-radius:4px;box-shadow:0 0 0 1px var(--gold);}
+  .day-table td{height:32px;}
+  .day-table .idx{color:var(--muted);font-size:11.5px;width:34px;text-align:center;}
+
+  .footnote{font-size:12px;color:var(--muted);margin-top:10px;}
+  .nowrap{white-space:nowrap;}
+  .center{text-align:center;}
+
+  .modal-bg{
+    display:none;position:fixed;inset:0;background:rgba(20,8,8,.55);z-index:50;
+    align-items:center;justify-content:center;padding:20px;
+  }
+  .modal-bg.open{display:flex;}
+  .modal{
+    background:var(--cream);border:2px solid var(--gold);border-radius:14px;
+    max-width:640px;width:100%;padding:22px 24px;max-height:88vh;overflow:auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.45);
+  }
+  .modal h3{margin:0 0 14px;font-family:Georgia,serif;color:var(--brown);font-size:19px;}
+  .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
+
+  @media(max-width:700px){
+    header{flex-wrap:wrap;}
+    header .right{margin-left:0;width:100%;text-align:left;}
+    main{padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">✦</div>
+  <div>
+    <h1>LUMIAR EVENTOS<span>Relatório Comercial · Troféu Pernambuco Brilhante · Recife‑PE</span></h1>
+  </div>
+  <div class="right">
+    Atualizado em <span id="todayLabel"></span><br>
+    <button onclick="exportarPDF()">⬇ Exportar PDF completo</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-tab="contatos">Contatos</button>
+  <button data-tab="planejamento">Planejamento Semanal</button>
+  <button data-tab="registro">Registro de Contatos</button>
+</nav>
+
+<main>
+
+  <!-- ================= ABA CONTATOS ================= -->
+  <section id="tab-contatos" class="tab-content active">
+    <div class="card">
+      <h2>Base de Contatos</h2>
+      <div class="toolbar">
+        <input class="grow" id="filtroContatos" placeholder="Buscar por nome, segmento, cidade ou telefone…">
+        <select id="filtroSegmento">
+          <option value="">Todos os segmentos</option>
+        </select>
+        <button class="btn ghost" onclick="limparFiltrosContatos()">Limpar</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tabelaContatos">
+          <thead>
+            <tr>
+              <th style="width:46px">#</th>
+              <th>Nome da empresa</th>
+              <th>Segmento</th>
+              <th>Cidade</th>
+              <th>Telefone / WhatsApp</th>
+              <th>E‑mail</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="footnote" id="contatosCount"></p>
+    </div>
+  </section>
+
+  <!-- ================= ABA PLANEJAMENTO ================= -->
+  <section id="tab-planejamento" class="tab-content">
+    <div class="card">
+      <h2>Planejamento Semanal — Segunda a Sexta (meta: 100 contatos/dia)</h2>
+    </div>
+
+    <div class="day-block">
+      <h3>Segunda‑feira <small id="cnt-seg"></small></h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="day-table" id="tbl-seg"><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <h3>Terça‑feira <small id="cnt-ter"></small></h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="day-table" id="tbl-ter"><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <h3>Quarta‑feira <small id="cnt-qua"></small></h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="day-table" id="tbl-qua"><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <h3>Quinta‑feira <small id="cnt-qui"></small></h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="day-table" id="tbl-qui"><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <h3>Sexta‑feira <small id="cnt-sex"></small></h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="day-table" id="tbl-sex"><tbody></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABA REGISTRO ================= -->
+  <section id="tab-registro" class="tab-content">
+    <div class="card">
+      <h2>Resumo do Dia</h2>
+      <div class="stats">
+        <div class="stat"><div class="num" id="stContatos">0</div><div class="lbl">Contatos feitos</div></div>
+        <div class="stat"><div class="num" id="stTentativas">0</div><div class="lbl">Tentativas</div></div>
+        <div class="stat"><div class="num" id="stFalhas">0</div><div class="lbl">Falhas</div></div>
+        <div class="stat"><div class="num" id="stFechou">0</div><div class="lbl">Fechou</div></div>
+        <div class="stat"><div class="num" id="stQuase">0</div><div class="lbl">Quase fechou</div></div>
+        <div class="stat"><div class="num" id="stRecusou">0</div><div class="lbl">Recusou</div></div>
+      </div>
+      <div class="toolbar">
+        <label style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;">Filtrar dia:</label>
+        <select id="filtroDiaRegistro" onchange="renderRegistros()">
+          <option value="">Todos</option>
+          <option>Segunda-feira</option>
+          <option>Terça-feira</option>
+          <option>Quarta-feira</option>
+          <option>Quinta-feira</option>
+          <option>Sexta-feira</option>
+        </select>
+        <button class="btn" onclick="abrirModal()">+ Novo registro</button>
+        <button class="btn ghost" onclick="exportarCSV()">Exportar CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tabelaRegistros">
+          <thead>
+            <tr>
+              <th style="width:120px">Dia</th>
+              <th>Nome do contato</th>
+              <th>Empresa</th>
+              <th>Telefone</th>
+              <th>Status</th>
+              <th>Motivo / Observação</th>
+              <th style="width:60px" class="center">Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="footnote" id="registrosCount"></p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= MODAL NOVO REGISTRO ================= -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3>Registrar contato</h3>
+    <div class="form-grid">
+      <div>
+        <label>Dia da semana</label>
+        <select id="fDia">
+          <option>Segunda-feira</option>
+          <option>Terça-feira</option>
+          <option>Quarta-feira</option>
+          <option>Quinta-feira</option>
+          <option>Sexta-feira</option>
+        </select>
+      </div>
+      <div>
+        <label>Nome do contato</label>
+        <input id="fNome" placeholder="Ex.: Maria Silva">
+      </div>
+      <div>
+        <label>Empresa</label>
+        <input id="fEmpresa" placeholder="Ex.: PUR Hair Spa">
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input id="fTelefone" placeholder="(81) 9....">
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="fStatus">
+          <option value="Fechou">Fechou</option>
+          <option value="Quase fechou">Quase fechou</option>
+          <option value="Recusou">Recusou</option>
+          <option value="Sem resposta">Sem resposta</option>
+          <option value="Falha na tentativa">Falha na tentativa</option>
+        </select>
+      </div>
+      <div class="full">
+        <label>Motivo / Observação</label>
+        <textarea id="fObs" placeholder="Se recusou por quê? Se quase fechou, o que faltou? Quantas tentativas?"></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn" onclick="salvarRegistro()">Salvar registro</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   1. BASE DE CONTATOS (Excel + arquivos de texto)
+   ========================================================= */
+const contatosBase = [
+  // ---- prospeccao_empresas_recife_lote1.xlsx (75) ----
+  ["ORLA Imobiliária","Imobiliária","Recife","(81) 98988-6565","contato@orlaimobiliaria.com"],
+  ["Bom Imóvel","Imobiliária","Recife","(81) 99625-0949","bomimovel@bomimovel.com.br"],
+  ["AP Livre Imóveis","Imobiliária","Recife","(81) 99774-8888","aplivreimoveis@gmail.com"],
+  ["Garra Imóveis","Imobiliária","Recife","(81) 99973-5318","garraimoveispe@gmail.com"],
+  ["Imobiliária Rosana Melo","Imobiliária","Recife","(81) 99810-2306","mkt.rosanamelo@gmail.com"],
+  ["CLJotas Imóveis","Imobiliária","Recife","(81) 99241-3377","cljotasimoveis@gmail.com"],
+  ["Imobiliária Torres","Imobiliária","Recife","(81) 99244-2634","contato@imobiliariatorres.com"],
+  ["C3K Imóveis","Imobiliária","Recife","(81) 99484-7110","contato@c3kimoveis.com.br"],
+  ["Central de Vendas","Imobiliária","Recife","(81) 99964-0041","comercial@centraldevendasbr.com.br"],
+  ["Abretto Negócios Imobiliários","Imobiliária","Recife","(81) 99968-7116","contato@abrettoimob.com.br"],
+  ["Âncora Imobiliária","Imobiliária","Recife","(81) 98126-1760","aluisio.baptista@ancoraimobiliaria.com.br"],
+  ["Hub Nogueira","Imobiliária","Recife","(81) 99242-1622","gerlinebarbosa@hubnogueira.com.br"],
+  ["Fleischman Assessoria Imobiliária","Imobiliária","Recife","(81) 99973-4242","recepcao@fleischman.com.br"],
+  ["S1B Negócios Imobiliários","Imobiliária","Recife","(81) 99866-4444","contato@s1bnegocios.com.br"],
+  ["RE/MAX Conceito","Imobiliária","Recife","(81) 99709-2525","conceito@remax.com.br"],
+  ["Muniz Negócios Imobiliários","Imobiliária","Recife","(81) 99510-8691","paulo@munizimoveis.com.br"],
+  ["Direct Imóveis","Imobiliária","Recife","(81) 97329-9711","direct@directimoveis.com.br"],
+  ["Imobiliária N4","Imobiliária","Recife","(81) 99982-0501","n4imobiliariarecife@gmail.com"],
+  ["CTI Imobiliária","Imobiliária","Recife","(81) 3445-5000 / (81) 99451-3473","cti@ctiimobiliaria.com.br"],
+  ["Habitat Recife","Imobiliária","Recife","(81) 99633-2269 / (81) 99526-8306","contato@habitatrecife.com.br"],
+  ["Morada Real Imobiliária","Imobiliária","Recife","(81) 3033-0792",""],
+  ["BCI Imobiliária","Imobiliária","Recife","(81) 3091-8981","comercial@bciimobiliaria.com.br"],
+  ["Arrecifes Imobiliária","Imobiliária","Recife","(81) 4009-0909","arrecifes@arrecifes.com.br"],
+  ["Morejá Imobiliária","Imobiliária","Recife","(81) 98769-3752","administracao@morejaimobiliaria.com.br"],
+  ["Prix Imobiliária","Imobiliária","Recife","(81) 98811-1919","vendas@priximobiliaria.com.br"],
+  ["Imobiliária Recife (IRL)","Imobiliária","Recife","(81) 98814-6668",""],
+  ["Imobiliária Minha Kasa","Imobiliária","Recife","(81) 98636-8045",""],
+  ["Paulo Miranda Imobiliária","Imobiliária","Recife","(81) 99423-7339",""],
+  ["Direcional","Imobiliária / construtora","Recife","(81) 98106-7702","hadassa.moreira@direcional.com.br"],
+  ["Casa Nova Soluções Imobiliárias","Imobiliária","Recife","(81) 98460-7873",""],
+  ["BemorAR Consultoria Imobiliária","Imobiliária","Recife","",""],
+  ["MRV","Construtora / imobiliária","Recife","(81) 99240-8689",""],
+  ["Morada Sol Imobiliárias","Imobiliária","Recife","(81) 99678-5159 / (81) 98131-2928",""],
+  ["Julio Paulino Imóveis LTDA","Imobiliária","Recife","(81) 99627-9314",""],
+  ["RE/MAX C-LEVEL","Imobiliária","Recife","(81) 98395-2088","conceito@remax.com.br"],
+  ["Torres Imobiliária","Imobiliária","Recife","(81) 99845-7285","torresimobiliaria54@gmail.com"],
+  ["Marques Imobiliária","Imobiliária","Recife","(81) 99761-7291","marquesimobpe@gmail.com"],
+  ["Morada Sol Imobiliária","Imobiliária","Recife","(81) 3465-6000 / (81) 99995-0283","nataliaferreira@moradasol.com.br"],
+  ["RE/MAX Confidence","Imobiliária","Recife","(81) 99264-1432",""],
+  ["Álvaro Lucena Imobiliária","Imobiliária","Recife","(81) 99102-1710","admalvarolucenaimoveis@gmail.com"],
+  ["Focus Imobiliária","Imobiliária","Recife","(81) 98211-4816","marianna.queiroz.rosal@gmail.com"],
+  ["Imobiliária Kaéfe","Imobiliária","Recife","(81) 99645-5252 / (81) 98551-2446","kaefeinvestedanalise@gmail.com"],
+  ["Ouro Imobiliária","Imobiliária","Recife","(81) 99272-7379 / (81) 98297-6686","ouroimobiliariaouro@gmail.com"],
+  ["More Imob","Imobiliária","Recife","(81) 98756-0511","moreimobpe@gmail.com"],
+  ["FFA Advogados","Advocacia","Recife","(81) 3035-0321","rec@ffa.com.br"],
+  ["Beltrão Pereira Advogados","Advocacia","Recife","(81) 99322-1233","contato@beltraopereira.com.br"],
+  ["Gigleyson Santana Advocacia","Advocacia","Recife","(81) 98756-4467","contato@gigleysonadv.com.br"],
+  ["Paes Barreto Advogados Associados","Advocacia","Recife","(81) 3423-1925 / (81) 99999-6119","escritorio@paesbarreto.adv.br"],
+  ["Medeiros e Elihimas Advogados","Advocacia","Recife","(81) 98810-3447","contato@medeladv.com.br"],
+  ["Souza Advogados","Advocacia","Recife","(81) 99712-4535 / (81) 99745-5873","contato@souzadvogadospe.com"],
+  ["Pereira Advocacia","Advocacia","Recife","(81) 99108-6554 / (81) 99703-6312 / (81) 99874-7908","contato@pereiraadvocacia.com"],
+  ["Donato Advocacia","Advocacia","Recife","(81) 98224-8002","contato@donato.adv.br"],
+  ["Batista & Cândido Advocacia","Advocacia","Recife","(81) 3049-3097","contato@batistaecandido.com"],
+  ["Clínica Luciana Lima Saúde & Estética","Clínica de estética","Recife","(81) 98731-6331 / (81) 3497-1947","contato@esteticalucianalima.com.br"],
+  ["SIDE Estética","Clínica de estética","Recife","(81) 98980-1312 / (81) 99486-1463","clinicaolgaalves@gmail.com"],
+  ["Dermatho Clínica Dermatológica","Clínica dermatológica","Recife","(81) 3076-1212 / (81) 3059-3044 / (81) 97102-9650","contato@clinicadermatho.com.br"],
+  ["Clínica Dona","Clínica de estética","Recife","(81) 3035-0133 / (81) 98785-9863","contato@clinicadona.com.br"],
+  ["Instituto Replace","Clínica de cirurgia plástica","Recife","(81) 97119-5887","contato@institutoreplace.com.br"],
+  ["Clínica Viva Bem","Clínica de estética","Recife","(81) 99624-0193",""],
+  ["Bestlaser Casa Forte","Clínica de estética","Recife","(81) 99559-5685",""],
+  ["Clínica Ella's Estética e Depilação a Laser","Clínica de estética","Recife","(81) 3442-3129",""],
+  ["Odontoweiss / WE Clínica Odontológica","Clínica odontológica","Recife","(81) 97318-5005 / (81) 3091-1895","recife@odontoweiss.com.br"],
+  ["Ramalho Advocacia","Advocacia","Recife","(81) 99971-5600",""],
+  ["Thiago Luna - Escritório de Advocacia","Advocacia","Recife","(81) 99598-7976",""],
+  ["Bedê e Nóbrega Advogados Associados","Advocacia","Recife","(81) 3038-8268",""],
+  ["Santana & Guedes Advogados","Advocacia","Recife","0800 484 5474",""],
+  ["Raul Varejão Advogados","Advocacia","Recife","(81) 99616-7610",""],
+  ["Jorge Ferraz Advocacia","Advocacia","Recife","(81) 99622-6540",""],
+  ["Aureah Bem Estar e Estética","Clínica de estética","Recife","(81) 3034-7551 / (81) 99134-8544",""],
+  ["Centro de Emagrecimento Interativo","Clínica de estética","Recife","(81) 3071-7097 / (81) 99137-6118",""],
+  ["Emagrecentro Recife Zona Norte","Clínica de estética","Recife","(81) 3049-2369",""],
+  ["Clínica Finesse","Clínica de estética","Recife","(81) 99846-0205",""],
+  ["Dia Sol Ltda / Salão de Beleza","Salão de beleza","Recife","(81) 99849-0597",""],
+  ["Salão Empresa e Espaço Estético SENAC","Salão de beleza / estética","Recife","0800 0811 688",""],
+  ["SPA Lena Mota","Spa / estética","Recife","(81) 98422-6847",""],
+
+  // ---- 1. Escritórios de contabilidade.txt ----
+  ["4Hands Auditoria","Contabilidade","Recife","Não localizado","contato@4handsgroup.com.br"],
+  ["AGM Consultoria","Contabilidade","Recife","Não localizado","sac@agmconsultoria.com"],
+  ["AP Assessoria Contábil","Contabilidade","Recife","Não localizado","ap@apassessoriacontabil.com.br"],
+  ["Acerto Contabilidade","Contabilidade","Recife","Não localizado","financeiro@acertocontabilidade.com.br"],
+  ["Absoluta Contabilidade","Contabilidade","Recife","Não localizado","jorge@absolutacontabilidade.com.br"],
+  ["AC Consult Gestão em Contabilidade","Contabilidade","Recife","Não localizado","financeiro@acconsultcontadores.com.br"],
+  ["ACENE Contabilidade","Contabilidade","Recife","Não localizado","financeiro@acenecontabilidade.com.br"],
+  ["Agenda Empresarial","Contabilidade","Recife","Não localizado","fcesar@agenda.com.br"],
+  ["AGIR Assessoria Empresarial","Contabilidade","Recife","Não localizado","agir@agir.cnt.br"],
+  ["AJSF Consultoria Contábil","Contabilidade","Recife","Não localizado","Ailtonjsfilho@gmail.com"],
+  ["ALEC Contábil","Contabilidade","Recife","Não localizado","adelvanialec@alec.com.br"],
+  ["AMO Consultoria Contábil","Contabilidade","Recife","Não localizado","amoconsultoriacontabil@gmail.com"],
+  ["AMP Consultoria","Contabilidade","Recife","Não localizado","financeiro@dataconte.com.br"],
+  ["Assconta","Contabilidade","Recife","Não localizado","secretariagq@assconta.com.br"],
+  ["Ativa Contábil","Contabilidade","Recife","Não localizado","financeiro@emcconsultoria.com.br"],
+  ["Atlânticos Soluções Contábeis","Contabilidade","Recife","Não localizado","financeiro@atlanticossolucoes.com.br"],
+  ["Audi3 Contabilidade","Contabilidade","Recife","Não localizado","renata.rocha@audi3.com.br"],
+  ["BKR Lopes Machado","Contabilidade","Recife","Não localizado","recife@bkr-lopesmachado.com.br"],
+  ["Campos & Garcia","Contabilidade","Recife","Não localizado","financeiro@camposegarcia.com.br"],
+  ["Chalegre Contabilidade","Contabilidade","Recife","Não localizado","camila@chalegrecontabilidade.com.br"],
+  ["Check BPO Contabilidade","Contabilidade","Recife","Não localizado","atendimento@checkbpo.com.br"],
+  ["Ecovis WFA Auditores","Contabilidade","Recife","Não localizado","laercio.lima@ecovisbr.com"],
+  ["Edileila S. Barbosa Contabilidade","Contabilidade","Recife","Não localizado","edileila.contabilidade@hotmail.com"],
+  ["Embraccon","Contabilidade","Recife","Não localizado","rodrigolucena@embraccon.com.br"],
+  ["Energy Contadores Associados","Contabilidade","Recife","Não localizado","energy@energycontadores.com.br"],
+  ["Escritecont Assessoria Contábil","Contabilidade","Recife","Não localizado","pessoal@escritecont.com.br"],
+  ["Innova Serviços de Contabilidade","Contabilidade","Recife","Não localizado","jader.guerra@innovacontadores.com.br"],
+  ["J. Barros Contabilidade","Contabilidade","Recife","Não localizado","jrd.barros@gmail.com"],
+  ["J. Silva Assessoria Contábil","Contabilidade","Recife","Não localizado","bruna.alessandra@jsilvacontabil.com.br"],
+  ["JBC Assessoria Contábil","Contabilidade","Recife","Não localizado","roberlandia@jbccontabil.com.br"],
+  ["JC Buarque Serviços Contábeis","Contabilidade","Recife","Não localizado","financeiro@jcbuarque.com.br"],
+  ["Leonardo Coelho Advocacia","Advocacia","Recife","Não localizado","contato@leonardocoelho.adv.br"],
+  ["Lex Cora","Contabilidade","Recife","Não localizado","adm@lexcora.com.br"],
+  ["Prime Soluções Contábeis","Contabilidade","Recife","Não localizado","patricia.santos@primepscontabil.com.br"],
+  ["RJ Medeiros","Contabilidade","Recife","Não localizado","reginaldo@rjmedeiros.com.br"],
+  ["Race Consultoria Empresarial","Contabilidade","Recife","Não localizado","robson@raceconsultoria.com.br"],
+  ["Recicon Recife Contabilidade","Contabilidade","Recife","Não localizado","administracao@reciconcontabilidade.com.br"],
+  ["RMA Contadores Associados","Contabilidade","Recife","Não localizado","raphael.rmcontadores@gmail.com"],
+  ["Rocha & Montarroyos Consultoria","Contabilidade","Recife","Não localizado","sabrina@remconsult.com.br"],
+  ["RS Gestão Contábil","Contabilidade","Recife","Não localizado","rivaldo.rescontabilidade@gmail.com"],
+  ["Satierf Contadores Associados","Contabilidade","Recife","Não localizado","financeiro@satierfcontadores.com.br"],
+  ["SDE Consultoria Empresarial","Contabilidade","Recife","Não localizado","ednaldo@sdeconsultoria.com.br"],
+  ["Sempre Contabilidade","Contabilidade","Recife","Não localizado","sbosco@semprecontabilidade.com.br"],
+  ["SG Consultoria Contábil","Contabilidade","Recife","Não localizado","adm@sgconsultoria.cnt.br"],
+  ["Sistema Assessoria Contábil","Contabilidade","Recife","Não localizado","adriana@sistemacontabil.org"],
+  ["Sistêmica Contabilidade","Contabilidade","Recife","Não localizado","financeiro@sistemicacontabilidade.com.br"],
+  ["Socontel","Contabilidade","Recife","Não localizado","contato@socontelcontabil.com.br"],
+  ["Souto & Damascena","Contabilidade","Recife","Não localizado","lucianadamascena@soutoedamascena.com.br"],
+  ["Souto Maior Contadores","Contabilidade","Recife","Não localizado","leuridia.aleixo@soutomaiorcontadores.com.br"],
+  ["Villarroel Contabilidade","Contabilidade","Recife","Não localizado","administrativo@villarroel.com.br"],
+
+  // ---- 2. Escritórios de advocacia ----
+  ["Reis Advocacia","Advocacia","Recife","(81) 3312-1950","Não localizado"],
+  ["Werner Advocacia","Advocacia","Recife","(81) 99924-8149","Não localizado"],
+  ["Queiroz & Ferraz Advocacia","Advocacia","Recife","(81) 98944-6336","Não localizado"],
+  ["Moreno Advocacia","Advocacia","Recife","(81) 98376-7646","Não localizado"],
+  ["Falcão & Gonçalves","Advocacia","Recife","(81) 99890-4914","Não localizado"],
+  ["Frutuoso Advocacia","Advocacia","Recife","(81) 3427-3983","Não localizado"],
+  ["Rodrigo Scholz Advocacia","Advocacia","Recife","(81) 99700-9933","Não localizado"],
+  ["Allysson Botelho Advogados","Advocacia","Recife","(81) 99677-8186","Não localizado"],
+  ["Marcos Inácio Advogados","Advocacia","Recife","(81) 97604-3618","Não localizado"],
+  ["Maia Freire Advogados","Advocacia","Recife","(81) 99193-6514","Não localizado"],
+  ["Paulo Alencar Advocacia","Advocacia","Recife","(81) 3314-7661","contato@pauloalencaradvocacia.com.br"],
+
+  // ---- 3. Clínicas de estética e dermatologia ----
+  ["Clínica Estética Jailma Gomes","Clínica de estética","Recife","(81) 98775-3497","Não localizado"],
+  ["BotoEsthetic","Clínica de estética","Recife","(81) 98886-0055","Não localizado"],
+  ["Unique Dermatologia","Clínica dermatológica","Recife","(81) 98877-9148","Não localizado"],
+  ["Dra. Renata Vidal","Clínica dermatológica","Recife","(81) 98880-8887","Não localizado"],
+  ["Corporemax","Clínica de estética","Recife","(81) 3032-0957","corporemax@outlook.com"],
+  ["Vitacorpus Estética Avançada","Clínica de estética","Recife","(81) 3011-2208","anderson@amplacontabeis.com.br"],
+  ["Clínica Amie","Clínica de estética","Recife","(81) 99537-2650","contato@clinicaamie.com"],
+  ["Clínica Luciana Lima","Clínica de estética","Recife","(81) 98731-6331","contato@esteticalucianalima.com.br"],
+  ["SIDE Estética","Clínica de estética","Recife","(81) 98980-1312","clinicaolgaalves@gmail.com"],
+  ["Dermatho","Clínica dermatológica","Recife","(81) 3076-1212","contato@clinicadermatho.com.br"],
+  ["Clínica Dona","Clínica de estética","Recife","(81) 3035-0133","contato@clinicadona.com.br"],
+  ["Instituto Replace","Clínica de cirurgia plástica","Recife","(81) 97119-5887","contato@institutoreplace.com.br"],
+
+  // ---- 4. Salões de beleza ----
+  ["Studio Amélia","Salão de beleza","Recife","(81) 99660-0190","Não localizado"],
+  ["Bloom Espaço de Beleza","Salão de beleza","Recife","(81) 99700-0052","Não localizado"],
+  ["Marleide & Team","Salão de beleza","Recife","(81) 3242-6163","Não localizado"],
+  ["La Bella Studium de Beleza","Salão de beleza","Recife","(81) 98822-2648","Não localizado"],
+  ["Clube SinBeleza","Salão de beleza","Recife","(81) 3049-9011","contato.sinbeleza@outlook.com"]
+];
+
+/* =========================================================
+   2. RENDER ABA CONTATOS
+   ========================================================= */
+const tbodyContatos = document.querySelector('#tabelaContatos tbody');
+const filtroContatos = document.getElementById('filtroContatos');
+const filtroSegmento = document.getElementById('filtroSegmento');
+
+function popularSegmentos(){
+  const set = [...new Set(contatosBase.map(c=>c[1]).filter(Boolean))].sort();
+  set.forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s;
+    filtroSegmento.appendChild(o);
+  });
+}
+popularSegmentos();
+
+function renderContatos(){
+  const q = filtroContatos.value.toLowerCase().trim();
+  const seg = filtroSegmento.value;
+  tbodyContatos.innerHTML='';
+  let count=0;
+  contatosBase.forEach((c,i)=>{
+    const [nome,segmento,cidade,tel,email]=c;
+    if(seg && segmento!==seg) return;
+    if(q && !(`${nome} ${segmento} ${cidade} ${tel} ${email}`.toLowerCase().includes(q))) return;
+    count++;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="idx">${i+1}</td>
+      <td><strong>${nome}</strong></td>
+      <td>${segmento||'—'}</td>
+      <td>${cidade||'—'}</td>
+      <td class="nowrap">${tel||'—'}</td>
+      <td>${email||'—'}</td>`;
+    tbodyContatos.appendChild(tr);
+  });
+  document.getElementById('contatosCount').textContent =
+    `${count} de ${contatosBase.length} contatos exibidos.`;
+}
+filtroContatos.addEventListener('input',renderContatos);
+filtroSegmento.addEventListener('change',renderContatos);
+function limparFiltrosContatos(){ filtroContatos.value=''; filtroSegmento.value=''; renderContatos(); }
+renderContatos();
+
+/* =========================================================
+   3. PLANEJAMENTO SEMANAL — 5 dias × 100 linhas
+   Preenchimento: distribui a base entre os dias, dando
+   prioridade ao preenchimento integral de cada dia (meta 100).
+   Como a base tem ~150 contatos, cada dia recebe o que
+   couber; dias sem contatos suficientes ficam com linhas
+   em branco para preenchimento manual.
+   ========================================================= */
+const dias = [
+  {key:'seg', label:'Segunda-feira'},
+  {key:'ter', label:'Terça-feira'},
+  {key:'qua', label:'Quarta-feira'},
+  {key:'qui', label:'Quinta-feira'},
+  {key:'sex', label:'Sexta-feira'}
+];
+const TOTAL_LINHAS = 100;
+
+// Estratégia: percorre os contatos e distribui em blocos de 100
+// entre os dias. Como a base tem menos de 500, os primeiros dias
+// ficam completos e os últimos recebem o restante.
+const pool = [...contatosBase];
+dias.forEach((d, diaIdx)=>{
+  const tbody = document.querySelector(`#tbl-${d.key} tbody`);
+  let preenchidos = 0;
+  for(let i=0;i<TOTAL_LINHAS;i++){
+    const tr = document.createElement('tr');
+    const contato = pool.shift();
+    const n = i+1;
+    if(contato){
+      preenchidos++;
+      tr.innerHTML = `
+        <td class="idx">${n}</td>
+        <td><input value="${contato[0]}" placeholder="Nome da empresa"></td>
+        <td><input value="${contato[3]}" placeholder="Telefone/WhatsApp"></td>
+        <td><input value="${contato[1]}" placeholder="Segmento"></td>
+        <td><input value="" placeholder="Status da visita"></td>`;
+    }else{
+      tr.innerHTML = `
+        <td class="idx">${n}</td>
+        <td><input placeholder="Nome da empresa"></td>
+        <td><input placeholder="Telefone/WhatsApp"></td>
+        <td><input placeholder="Segmento"></td>
+        <td><input placeholder="Status da visita"></td>`;
+    }
+    tbody.appendChild(tr);
+  }
+  document.getElementById(`cnt-${d.key}`).textContent =
+    `${preenchidos} de ${TOTAL_LINHAS} preenchidos com a base`;
+});
+
+/* =========================================================
+   4. REGISTRO DE CONTATOS
+   ========================================================= */
+let registros = [];
+const STORAGE_KEY = 'lumiar_registros_v1';
+try{
+  const salvo = localStorage.getItem(STORAGE_KEY);
+  if(salvo) registros = JSON.parse(salvo);
+}catch(e){ registros=[]; }
+
+function salvarLocal(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(registros)); }catch(e){} }
+
+function badgeClass(status){
+  const map={
+    'Fechou':'b-fechou',
+    'Recusou':'b-recusou',
+    'Quase fechou':'b-quase',
+    'Sem resposta':'b-semresp',
+    'Falha na tentativa':'b-falha'
+  };
+  return map[status]||'b-semresp';
+}
+
+function renderRegistros(){
+  const filtroDia = document.getElementById('filtroDiaRegistro').value;
+  const tbody = document.querySelector('#tabelaRegistros tbody');
+  tbody.innerHTML='';
+  let lista = registros;
+  if(filtroDia) lista = lista.filter(r=>r.dia===filtroDia);
+
+  const base = filtroDia ? registros.filter(r=>r.dia===filtroDia) : registros;
+  const contatosFeitos = base.filter(r=>['Fechou','Quase fechou','Recusou','Sem resposta'].includes(r.status)).length;
+  const tentativas = base.filter(r=>r.status==='Falha na tentativa' || r.status==='Sem resposta' || r.status==='Recusou').length;
+  const falhas = base.filter(r=>r.status==='Falha na tentativa').length;
+  const fechou = base.filter(r=>r.status==='Fechou').length;
+  const quase = base.filter(r=>r.status==='Quase fechou').length;
+  const recusou = base.filter(r=>r.status==='Recusou').length;
+
+  document.getElementById('stContatos').textContent = contatosFeitos;
+  document.getElementById('stTentativas').textContent = tentativas;
+  document.getElementById('stFalhas').textContent = falhas;
+  document.getElementById('stFechou').textContent = fechou;
+  document.getElementById('stQuase').textContent = quase;
+  document.getElementById('stRecusou').textContent = recusou;
+
+  if(lista.length===0){
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-hint">Nenhum registro ${filtroDia? 'para '+filtroDia : 'cadastrado'} ainda. Use “+ Novo registro”.</td></tr>`;
+  }else{
+    lista.forEach((r)=>{
+      const realIdx = registros.indexOf(r);
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td class="nowrap">${r.dia}</td>
+        <td><strong>${r.nome||'—'}</strong></td>
+        <td>${r.empresa||'—'}</td>
+        <td>${r.telefone||'—'}</td>
+        <td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td>
+        <td style="font-size:12.5px;color:#5a4a35">${r.obs||''}</td>
+        <td class="center"><button class="btn ghost" style="padding:4px 9px;font-size:11px" onclick="removerRegistro(${realIdx})">✕</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  document.getElementById('registrosCount').textContent =
+    `${lista.length} registro(s) exibido(s) — total geral: ${registros.length}.`;
+  salvarLocal();
+}
+
+function abrirModal(){ document.getElementById('modalBg').classList.add('open'); }
+function fecharModal(){
+  document.getElementById('modalBg').classList.remove('open');
+  document.getElementById('fNome').value='';
+  document.getElementById('fEmpresa').value='';
+  document.getElementById('fTelefone').value='';
+  document.getElementById('fObs').value='';
+  document.getElementById('fStatus').value='Fechou';
+}
+function salvarRegistro(){
+  const dia = document.getElementById('fDia').value;
+  const nome = document.getElementById('fNome').value.trim();
+  const empresa = document.getElementById('fEmpresa').value.trim();
+  const telefone = document.getElementById('fTelefone').value.trim();
+  const status = document.getElementById('fStatus').value;
+  const obs = document.getElementById('fObs').value.trim();
+  if(!nome && !empresa){ alert('Informe ao menos o nome do contato ou a empresa.'); return; }
+  registros.push({dia,nome,empresa,telefone,status,obs});
+  fecharModal();
+  renderRegistros();
+}
+function removerRegistro(i){
+  if(confirm('Remover este registro?')){
+    registros.splice(i,1);
+    renderRegistros();
+  }
+}
+function exportarCSV(){
+  if(registros.length===0){ alert('Nenhum registro para exportar.'); return; }
+  const linhas = [['Dia','Nome','Empresa','Telefone','Status','Observacao']];
+  registros.forEach(r=>linhas.push([r.dia,r.nome,r.empresa,r.telefone,r.status,r.obs]));
+  const csv = linhas.map(l=>l.map(x=>`"${(x||'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob = new Blob(["\uFEFF"+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'lumiar_registros_contatos.csv';
+  a.click();
+}
+
+/* =========================================================
+   5. EXPORTAR PDF COMPLETO
+   ========================================================= */
+function exportarPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 12;
+  let y = margin;
+
+  // Capa / cabeçalho
+  doc.setFillColor(43,15,15);
+  doc.rect(0,0,pageW,32,'F');
+  doc.setTextColor(201,162,75);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text('LUMIAR EVENTOS', margin, 14);
+  doc.setFontSize(9);
+  doc.setTextColor(230,201,122);
+  doc.text('Relatório Comercial · Troféu Pernambuco Brilhante · Recife-PE', margin, 21);
+  doc.setFontSize(8);
+  doc.text('Gerado em ' + new Date().toLocaleString('pt-BR'), pageW - margin, 27, {align:'right'});
+
+  y = 42;
+  doc.setTextColor(60,40,20);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.text('1. Base de Contatos', margin, y);
+  y += 4;
+
+  const rowsContatos = contatosBase.map((c,i)=>[String(i+1), c[0], c[1]||'', c[2]||'', c[3]||'', c[4]||'']);
+  doc.autoTable({
+    startY: y,
+    head: [['#','Nome da empresa','Segmento','Cidade','Telefone/WhatsApp','E-mail']],
+    body: rowsContatos,
+    margin:{left:margin,right:margin},
+    styles:{fontSize:7, cellPadding:1.5, overflow:'linebreak'},
+    headStyles:{fillColor:[61,22,22], textColor:[230,201,122], fontStyle:'bold', fontSize:7.5},
+    alternateRowStyles:{fillColor:[253,250,242]},
+    columnStyles:{0:{cellWidth:8},1:{cellWidth:38},2:{cellWidth:24},3:{cellWidth:16},4:{cellWidth:34},5:{cellWidth:50}},
+    didDrawPage:()=>{
+      doc.setFontSize(7);
+      doc.setTextColor(140,120,90);
+      doc.text('Lumiar Eventos · Relatório Comercial', margin, pageH-6);
+      doc.text('Página ' + doc.internal.getNumberOfPages(), pageW-margin, pageH-6, {align:'right'});
+    }
+  });
+
+  // Planejamento Semanal — resumo por dia (não imprime 500 linhas)
+  doc.addPage();
+  y = margin;
+  doc.setTextColor(60,40,20);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.text('2. Planejamento Semanal (resumo)', margin, y);
+  y += 6;
+
+  const resumoDias = dias.map(d=>{
+    const total = document.querySelectorAll(`#tbl-${d.key} tbody tr`).length;
+    const preench = [...document.querySelectorAll(`#tbl-${d.key} tbody tr input:first-of-type`)]
+      .filter(inp=>inp.value.trim()!=='').length;
+    return [d.label, String(total), String(preench), String(total - preench)];
+  });
+
+  doc.autoTable({
+    startY: y,
+    head: [['Dia','Total de linhas','Preenchidas (base)','Em branco (manual)']],
+    body: resumoDias,
+    margin:{left:margin,right:margin},
+    styles:{fontSize:9, cellPadding:3},
+    headStyles:{fillColor:[61,22,22], textColor:[230,201,122], fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[253,250,242]},
+  });
+  y = doc.lastAutoTable.finalY + 8;
+
+  // Tabela detalhada do planejamento (pode ser longa; imprime tudo)
+  doc.setFontSize(11);
+  doc.setTextColor(60,40,20);
+  doc.text('2.1 Detalhamento do planejamento (contatos preenchidos)', margin, y);
+  y += 4;
+
+  const detalhePlanejamento = [];
+  dias.forEach(d=>{
+    const inputs = [...document.querySelectorAll(`#tbl-${d.key} tbody tr`)];
+    inputs.forEach((tr, idx)=>{
+      const nome = tr.querySelector('td:nth-child(2) input')?.value.trim();
+      const tel  = tr.querySelector('td:nth-child(3) input')?.value.trim();
+      const seg  = tr.querySelector('td:nth-child(4) input')?.value.trim();
+      const st   = tr.querySelector('td:nth-child(5) input')?.value.trim();
+      if(nome || tel){
+        detalhePlanejamento.push([d.label, String(idx+1), nome||'', tel||'', seg||'', st||'']);
+      }
+    });
+  });
+  if(detalhePlanejamento.length){
+    doc.autoTable({
+      startY: y,
+      head: [['Dia','#','Empresa','Telefone','Segmento','Status']],
+      body: detalhePlanejamento,
+      margin:{left:margin,right:margin},
+      styles:{fontSize:7, cellPadding:1.5, overflow:'linebreak'},
+      headStyles:{fillColor:[61,22,22], textColor:[230,201,122], fontStyle:'bold', fontSize:7.5},
+      alternateRowStyles:{fillColor:[253,250,242]},
+      columnStyles:{0:{cellWidth:26},1:{cellWidth:10},2:{cellWidth:50},3:{cellWidth:40},4:{cellWidth:34},5:{cellWidth:20}},
+      didDrawPage:()=>{
+        doc.setFontSize(7);
+        doc.setTextColor(140,120,90);
+        doc.text('Lumiar Eventos · Relatório Comercial', margin, pageH-6);
+        doc.text('Página ' + doc.internal.getNumberOfPages(), pageW-margin, pageH-6, {align:'right'});
+      }
+    });
+  }
+
+  // Registro de Contatos
+  doc.addPage();
+  y = margin;
+  doc.setTextColor(60,40,20);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.text('3. Registro de Contatos', margin, y);
+  y += 6;
+
+  // contadores
+  const totalReg = registros.length;
+  const fechou = registros.filter(r=>r.status==='Fechou').length;
+  const quase = registros.filter(r=>r.status==='Quase fechou').length;
+  const recusou = registros.filter(r=>r.status==='Recusou').length;
+  const semresp = registros.filter(r=>r.status==='Sem resposta').length;
+  const falha = registros.filter(r=>r.status==='Falha na tentativa').length;
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text(`Total de registros: ${totalReg}   |   Fechou: ${fechou}   |   Quase fechou: ${quase}   |   Recusou: ${recusou}   |   Sem resposta: ${semresp}   |   Falha: ${falha}`, margin, y);
+  y += 6;
+
+  if(registros.length){
+    const rowsReg = registros.map(r=>[r.dia, r.nome||'', r.empresa||'', r.telefone||'', r.status||'', r.obs||'']);
+    doc.autoTable({
+      startY: y,
+      head: [['Dia','Nome','Empresa','Telefone','Status','Observação']],
+      body: rowsReg,
+      margin:{left:margin,right:margin},
+      styles:{fontSize:7.5, cellPadding:1.5, overflow:'linebreak'},
+      headStyles:{fillColor:[61,22,22], textColor:[230,201,122], fontStyle:'bold', fontSize:8},
+      alternateRowStyles:{fillColor:[253,250,242]},
+      columnStyles:{0:{cellWidth:24},1:{cellWidth:34},2:{cellWidth:34},3:{cellWidth:26},4:{cellWidth:24},5:{cellWidth:46}},
+      didDrawPage:()=>{
+        doc.setFontSize(7);
+        doc.setTextColor(140,120,90);
+        doc.text('Lumiar Eventos · Relatório Comercial', margin, pageH-6);
+        doc.text('Página ' + doc.internal.getNumberOfPages(), pageW-margin, pageH-6, {align:'right'});
+      }
+    });
+  }else{
+    doc.setFontSize(9);
+    doc.setTextColor(120,100,70);
+    doc.text('Nenhum registro de contato cadastrado até o momento.', margin, y);
+  }
+
+  doc.save('lumiar_relatorio_comercial.pdf');
+}
+
+/* =========================================================
+   6. ABAS
+   ========================================================= */
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* data de hoje */
+document.getElementById('todayLabel').textContent =
+  new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+
+renderRegistros();
+</script>
+</body>
+</html>
