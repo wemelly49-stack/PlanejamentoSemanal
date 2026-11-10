@@ -382,7 +382,7 @@
 
 <script>
 /* =========================================================
-   1. BASE DE CONTATOS (Excel + arquivos de texto)
+   1. BASE DE CONTATOS (Excel + arquivos de texto + ampliação)
    ========================================================= */
 const contatosBase = [
   // ---- prospeccao_empresas_recife_lote1.xlsx (75) ----
@@ -546,7 +546,104 @@ const contatosBase = [
   ["Bloom Espaço de Beleza","Salão de beleza","Recife","(81) 99700-0052","Não localizado"],
   ["Marleide & Team","Salão de beleza","Recife","(81) 3242-6163","Não localizado"],
   ["La Bella Studium de Beleza","Salão de beleza","Recife","(81) 98822-2648","Não localizado"],
-  ["Clube SinBeleza","Salão de beleza","Recife","(81) 3049-9011","contato.sinbeleza@outlook.com"]
+  ["Clube SinBeleza","Salão de beleza","Recife","(81) 3049-9011","contato.sinbeleza@outlook.com"],
+
+  // ---- AMPLIAÇÃO: Imobiliárias e administradoras de condomínios (SECOVI-PE) ----
+  ["A&M Administradora de Condomínios","Imobiliária / administradora","Recife","(81) 3722-3153","aemcondominio@gmail.com"],
+  ["Abasol Imóveis","Imobiliária","Recife","(81) 3465-6660","abasolimoveis@hotmail.com"],
+  ["Acin-Aguiar Condomínios","Administradora de condomínios","Recife","(81) 3221-7628 / 99172-7435","acincondominios@uol.com.br"],
+  ["Acta Administração","Administradora de condomínios","Recife","(81) 3412-3777","contato@actaadm.com.br"],
+  ["Agilizar Processos Imobiliários","Imobiliária","Recife","(81) 3031-3200","agilizar@agilizarprocessos.com.br"],
+  ["APSA","Administradora de condomínios","Recife","(81) 3464-2800","boaviagem@apsa.com.br"],
+  ["Arkos Gestão de Condomínios","Administradora de condomínios","Recife","(81) 3212-2256","contato@arkosadm.com.br"],
+  ["Avellar Imóveis","Imobiliária","Recife","(81) 3423-6742","avellarimoveis@avellarimoveis.com.br"],
+  ["Bello Lar Imóveis","Imobiliária","Recife","(81) 3071-1219 / 99663-0139","ffn@bellolarimoveis.com.br"],
+  ["Cedro Gestão Condominial","Administradora de condomínios","Recife","(81) 99921-0019","dirceu@cedrocondominios.com.br"],
+  ["Condo Premium","Administradora de condomínios","Recife","(81) 99946-4684","adm@condopremium.com.br"],
+  ["Contelis Administração","Administradora de condomínios","Recife","(81) 3376-5801","contato@contelis.com.br"],
+  ["Controlar Condomínios","Administradora de condomínios","Recife","(81) 3228-2460","atendimento@controlarcondominios.com.br"],
+  ["DAC Administradora","Administradora de condomínios","Recife","(81) 3204-4200 / 98649-2718","contato@dac.adm.br"],
+  ["DCR Negócios Imobiliários","Imobiliária","Recife","(81) 3071-8987 / 99133-6731","clientes@dcronegocios.com.br"],
+  ["França Administradora","Administradora de condomínios","Recife","(81) 4141-3252 / 98618-4577","contato@francacondominios.com.br"],
+  ["Flash Assessoria Condominial","Administradora de condomínios","Recife","(81) 3533-3367","flashcond@globo.com"],
+  ["GDR Administração","Administradora de condomínios","Recife","(81) 3212-0065","gdr@gdradministracao.com.br"],
+  ["Gedeão Pontes Imóveis","Imobiliária","Recife","(81) 3426-1199","gedeao@gedeaoimoveis.com.br"],
+  ["Holder Administração","Administradora de condomínios","Recife","(81) 3442-1618","atendimento@holder.adm.br"],
+  ["Imobiliária Eduardo Feitosa","Imobiliária","Recife","(81) 3059-4699","vendas@eduardofeitosa.com.br"],
+  ["Inaldo Dantas Administração","Administradora de condomínios","Recife","(81) 3132-0940 / 98707-7647","comercial@inaldodantas.com.br"],
+  ["Ponte Gestão Profissional","Administradora de condomínios","Recife","(81) 98773-5824","atendimento@pontecondominios.com.br"],
+  ["Precisa Prime","Administradora de condomínios","Recife","(81) 3033-9200","contato@precisaprime.com.br"],
+  ["P&R Condomínios","Administradora de condomínios","Recife","(81) 3224-1201","atendimento@peradministradora.com.br"],
+  ["Rafcon Administradora","Administradora de condomínios","Recife","(81) 3129-9537 / 98876-6461","condominios@rafcon.com.br"],
+  ["Select Administradora","Administradora de condomínios","Recife","(81) 97110-2525","selectadm@selectadministradora.com.br"],
+  ["Semog Administradora","Administradora de condomínios","Recife","(81) 3316-0265","semog.pe@semogcondominios.com.br"],
+  ["Tânia Macêdo Imóveis","Imobiliária","Recife","(81) 99834-1699","tania@taniamacedoimoveis.com.br"],
+  ["True Imobiliária","Imobiliária","Recife","(81) 3227-6633","danielaaraujo@trueimoveis.com.br"],
+  ["Unigov Gestão de Bens","Administradora de condomínios","Recife","(81) 3352-0800 / 97347-0398","julio@unigovgestao.com"],
+  ["Zygmunt Katz Imobiliária","Imobiliária","Recife","(81) 3423-5172","zykatz@zykatz.com.br"],
+
+  // ---- AMPLIAÇÃO: Escolas particulares e instituições de ensino (SINEPE-PE) ----
+  ["Berçário Arte de Crescer","Escola / educação infantil","Recife","(81) 3423-5972","artedecresceradm@outlook.com"],
+  ["CEDEC","Escola","Recife","(81) 3453-9283","mauxcabral@gmail.com"],
+  ["Centro Educacional Bem-Me-Quer","Escola","Recife","(81) 3132-6435","genelva@centroeducacionalbemmequer.com.br"],
+  ["Centro Escolar Carochinha","Escola","Recife","(81) 3268-6501","carochinha@carochinha.g12.br"],
+  ["Colégio Americano Batista","Escola","Recife","(81) 99730-7444 / 99730-7374","secretaria@americanobatista.com.br"],
+  ["Educandário Anita Garibaldi","Escola","Recife","(81) 3339-0277","contato@escolaanitagaribaldi.com.br"],
+  ["Educandário Cláudia Lima","Escola","Recife","(81) 98377-1625 / 98618-1691","contato.educandarioclaudialima@gmail.com"],
+  ["Educandário Shalom","Escola","Recife","(81) 3129-7307","marisa.souza@shalomcentroeducacional.com.br"],
+  ["Escola Americana do Recife","Escola","Recife","(81) 3341-4716","thereza.codeceira@ear.com.br"],
+  ["Escola Arco-Íris","Escola","Recife","(81) 3271-2485 / 3272-0150","arcoiris@nlink.com.br"],
+  ["Escola Bem-Me-Quer","Escola","Recife","(81) 3465-8670 / 3325-0580","secretaria.1@escolabemmequer.com"],
+  ["Blue School","Escola","Recife","(81) 3334-6875","rogerio@blueschool.com.br"],
+  ["Escola Construindo o Saber","Escola","Recife","(81) 3339-3428","suzanalunalu@gmail.com"],
+  ["Escola Despertar","Escola","Recife","(81) 3446-5251","contato@escoladespertarpe.com.br"],
+  ["Escola Eleva Recife","Escola","Recife","(81) 3334-5477","secretaria.recife@escolaeleva.com.br"],
+  ["Escola Encontro","Escola","Recife","(81) 3222-1506 / 3231-7698","escolaencontro30@gmail.com"],
+  ["Escola Souza Veras","Escola","Recife","(81) 3271-3049 / 3454-0219","csouzaveras@hotmail.com"],
+  ["Escola Unidade","Escola","Recife","(81) 3132-8369","escolaunidade@gmail.com"],
+  ["Escola Vila Bambino","Escola","Recife","(81) 3132-9910","escolavilabambino@gmail.com"],
+  ["Escola Waldorf do Recife","Escola","Recife","(81) 3441-0703","secretaria@escolawaldorfrecife.org"],
+  ["Geração Colégio e Curso","Escola","Recife","(81) 3453-2114","geracaocolegiocurso@yahoo.com.br"],
+  ["Instituto Capibaribe","Escola","Recife","(81) 3221-4950","secretaria@institutocapibaribe.com.br"],
+  ["Escola Maria Auxiliadora","Escola","Recife","(81) 3475-1376","escolaauxiliadoraatividades@gmail.com"],
+  ["Escola Nosso Ninho","Escola","Recife","(81) 3072-8677","nossoninhotorre@yahoo.com.br"],
+  ["Escola Novo Contato","Escola","Recife","(81) 3445-6561","escolanovocontato@gmail.com"],
+  ["Escola Planeta Kids","Escola","Recife","(81) 3441-8764","planetakidspedagogico@hotmail.com"],
+  ["Escola Santa Terezinha","Escola","Recife","(81) 3038-4453 / 3038-4458","thyago.brandao@escolasantaterezinha.com"],
+  ["Escola São Jorge","Escola","Recife","(81) 3455-5781","escolasaojorgepe@gmail.com"],
+
+  // ---- AMPLIAÇÃO: Clínicas odontológicas e centros de saúde bucal ----
+  ["Odontobaby","Clínica odontológica","Recife","(81) 3221-2849","odontobabyfamily@gmail.com"],
+  ["Centro Médico e Odontológico Ubaias","Clínica odontológica","Recife","(81) 3268-4652","odontoubaias@hotmail.com"],
+  ["Odontocape","Clínica odontológica","Recife","(81) 3082-2960","odontocape@uol.com.br"],
+  ["Luchsinger Odontologia Avançada","Clínica odontológica","Recife","(81) 99482-321","luchsinger.odontologiaavancada@gmail.com"],
+  ["Dental Prev","Clínica odontológica","Recife","(81) 99245-924","jose.ferreira@btpe.com.br"],
+  ["Bento Radnai Odontologia","Clínica odontológica","Recife","(81) 3421-5386","Não localizado"],
+  ["COEP – Centro Odontológico Especializado","Clínica odontológica","Recife","(81) 2412-915","coep.recife@hotmail.com"],
+  ["COOPE – Cooperativa dos Odontologistas","Clínica odontológica","Recife","(81) 3427-0472","coodonpe@gmail.com"],
+  ["Centro Schettini de Odontologia","Clínica odontológica","Recife","(81) 3222-7482","legalizacao@meccontabilidade.com.br"],
+  ["Projeto Sorrir","Clínica odontológica","Recife","(81) 3421-3326","psorrir@outlook.com"],
+  ["Clínica Odonto Spazzio","Clínica odontológica","Recife","(81) 8124-0222","finananceiro.odontospazzio@hotmail.com"],
+  ["HJC Consultório Odontológico","Clínica odontológica","Recife","(81) 3091-4424","Não localizado"],
+  ["Clidene Clínica Dentária","Clínica odontológica","Recife","(81) 3222-3821","jorgefbv@hotmail.com"],
+  ["Consultório André Coimbra","Clínica odontológica","Recife","(81) 92625-054","dracacd@hotmail.com"],
+  ["Centro de Estudos e Assistência Odontológica","Clínica odontológica","Recife","(81) 3231-0031","ceao.pe@oi.com.br"],
+
+  // ---- AMPLIAÇÃO: Advocacia e serviços jurídicos ----
+  ["Cossart & Mussalem Advogados","Advocacia","Recife","(81) 3036-8181","andre@acm.adv.br"],
+  ["Oliveira Jacobovitz","Advocacia","Recife","(81) 99187-3722","contato@oj.adv.br"],
+  ["Antonio Henrique Assessoria Jurídica","Advocacia","Recife","(81) 3423-9213","Não localizado"],
+  ["Estevão Ferreira & Pinheiro","Advocacia","Recife","(81) 3423-2495 / 3423-4110","Não localizado"],
+  ["Galindo & Falcão Advogados","Advocacia","Recife","(81) 3423-2494","Não localizado"],
+  ["Lapenda & Freire Advocacia","Advocacia","Recife","(81) 3231-3134","lapendaefreireadvocacia@gmail.com"],
+  ["Pedro Paulo Pedrosa Advogados","Advocacia","Recife","(81) 3421-9844","Não localizado"],
+
+  // ---- AMPLIAÇÃO: Contabilidade e consultoria empresarial ----
+  ["OEC Organização de Empresas e Contabilidade","Contabilidade","Recife","(81) 3423-1051 / 3421-7842 / 3040-0204","contato@oeccontabilidade.com.br"],
+  ["EAC Elias Assessoria Contábil","Contabilidade","Recife","(81) 98818-5407","consultoria@eaceliascontabil.com.br"],
+
+  // ---- AMPLIAÇÃO: Arquitetura e engenharia ----
+  ["RLA Arquitetura","Arquitetura","Recife","(81) 99902-9932","contato@robertolopes.com.br"]
 ];
 
 /* =========================================================
@@ -595,11 +692,6 @@ renderContatos();
 
 /* =========================================================
    3. PLANEJAMENTO SEMANAL — 5 dias × 100 linhas
-   Preenchimento: distribui a base entre os dias, dando
-   prioridade ao preenchimento integral de cada dia (meta 100).
-   Como a base tem ~150 contatos, cada dia recebe o que
-   couber; dias sem contatos suficientes ficam com linhas
-   em branco para preenchimento manual.
    ========================================================= */
 const dias = [
   {key:'seg', label:'Segunda-feira'},
@@ -610,11 +702,8 @@ const dias = [
 ];
 const TOTAL_LINHAS = 100;
 
-// Estratégia: percorre os contatos e distribui em blocos de 100
-// entre os dias. Como a base tem menos de 500, os primeiros dias
-// ficam completos e os últimos recebem o restante.
 const pool = [...contatosBase];
-dias.forEach((d, diaIdx)=>{
+dias.forEach((d)=>{
   const tbody = document.querySelector(`#tbl-${d.key} tbody`);
   let preenchidos = 0;
   for(let i=0;i<TOTAL_LINHAS;i++){
@@ -760,7 +849,6 @@ function exportarPDF(){
   const margin = 12;
   let y = margin;
 
-  // Capa / cabeçalho
   doc.setFillColor(43,15,15);
   doc.rect(0,0,pageW,32,'F');
   doc.setTextColor(201,162,75);
@@ -798,7 +886,6 @@ function exportarPDF(){
     }
   });
 
-  // Planejamento Semanal — resumo por dia (não imprime 500 linhas)
   doc.addPage();
   y = margin;
   doc.setTextColor(60,40,20);
@@ -825,7 +912,6 @@ function exportarPDF(){
   });
   y = doc.lastAutoTable.finalY + 8;
 
-  // Tabela detalhada do planejamento (pode ser longa; imprime tudo)
   doc.setFontSize(11);
   doc.setTextColor(60,40,20);
   doc.text('2.1 Detalhamento do planejamento (contatos preenchidos)', margin, y);
@@ -863,7 +949,6 @@ function exportarPDF(){
     });
   }
 
-  // Registro de Contatos
   doc.addPage();
   y = margin;
   doc.setTextColor(60,40,20);
@@ -872,7 +957,6 @@ function exportarPDF(){
   doc.text('3. Registro de Contatos', margin, y);
   y += 6;
 
-  // contadores
   const totalReg = registros.length;
   const fechou = registros.filter(r=>r.status==='Fechou').length;
   const quase = registros.filter(r=>r.status==='Quase fechou').length;
@@ -924,7 +1008,6 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
   });
 });
 
-/* data de hoje */
 document.getElementById('todayLabel').textContent =
   new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 
